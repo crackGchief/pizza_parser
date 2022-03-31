@@ -51,8 +51,6 @@ for i in match:
         current_menu.append(i.text)
         hrefs.append(i.get("data-popup-href"))
 result_vivat = href_manager(hrefs, current_menu)
-#print(result_vivat)
+print(result_vivat)
 "Тонкое м г ц, Пышное м г ц"
 
-#https://www.vivatpizza.ru/popup/constructor?constructorId=4f5ffd98-98e7-460d-ab31-272d22e23bd5
-#print("--- %s seconds ---" % (time.time() - start_time))
