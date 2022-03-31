@@ -1,9 +1,11 @@
+import time
+start_time = time.time()
+
 from pronto_parser import result_pronto, menu
 from allo_parser import result_allo
-'''from vivat_parser import result_vivat'''
+from vivat_parser import result_vivat
 
 import xlsxwriter as xlsx
-import pandas as pd
 
 '''def button(worksheet):
     worksheet.insert_button('A50', {'macro': 'rodrigo',
@@ -13,6 +15,21 @@ def correcr_pronto(weight):
     for i in range(len(weight)):
         weight[i] = weight[i][1:-1]
     return weight
+
+def vivat_data(result, worksheet):
+    menu = ['Маргарита', 'Пепперони', '4 сыра', 'Классика', 'Мясная делюкс', 'Мексиканская', 'Сальмоне']
+    prices = []
+    weight = []
+    for i in menu:
+        prices.extend(['', '', result[i][1], result[i][5], result[i][9], '', '', result[i][3], result[i][7],
+                       result[i][11]])
+        weight.extend(['', '', result[i][0], result[i][4], result[i][8], '', '', result[i][2], result[i][6],
+             result[i][10]])
+    for i in range(2):
+        prices.remove('')
+        weight.remove('')
+    worksheet.write_column('D3', prices)
+    worksheet.write_column('E3', weight)
 
 def pronto_data(result, worksheet):
     prices = []
@@ -70,9 +87,12 @@ worksheet.write_row('A1', pizza)
 
 pronto_data(result_pronto, worksheet)
 allo_data(result_allo, worksheet)
+vivat_data(result_vivat, worksheet)
 
 #button(worksheet)
 worksheet.set_row(0, 15, bold_cell)
 worksheet.set_column(0, len(tags), 35, bold_cell)
 
 workbook.close()
+
+print("--- %s seconds ---" % (time.time() - start_time))
