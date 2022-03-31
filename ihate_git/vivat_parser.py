@@ -10,7 +10,7 @@ def da_importa(a):
                 b.append(int(a[i]) * 100 + int(a[i + 1]) * 10 + int(a[i + 2]))
             if a[i + 3].isdigit():
                 b.append(int(a[i]) * 1000 + int(a[i + 1]) * 100 + int(a[i + 2]) * 10 + int(a[i + 3]))
-    print(b)
+    return b
 
 
 def new_url(url):
@@ -22,15 +22,9 @@ def new_url(url):
     new_spisok[0] = new_spisok[0].replace('\t','')
     new_spisok[0] = new_spisok[0].replace('\r','')
     new_spisok[0] = new_spisok[0].replace('\n','')
-    da_importa(new_spisok[0])
+    return da_importa(new_spisok[0])
 
-    '''for i in range(len(new_spisok[0])):
-        if new_spisok[0][i].isdigit():
-            if new_spisok[i + 2].isdigit() and new_spisok[i + 3].isdigit() == False and new_spisok[i - 1].isdigit() == False:
-                upgraded_spisok.append(int(new_spisok[i]) * 100 + int(new_spisok[i + 1]) * 10 + int(new_spisok[i + 2]))
-            if new_spisok[i + 3].isdigit():
-                upgraded_spisok.append(int(new_spisok[i]) * 1000 + int(new_spisok[i + 1]) * 100 + int(new_spisok[i + 2]) * 10 + int(new_spisok[i + 3]))
-    return upgraded_spisok'''
+
 
 
 
@@ -57,6 +51,8 @@ for i in match:
         current_menu.append(i.text)
         hrefs.append(i.get("data-popup-href"))
 result_vivat = href_manager(hrefs, current_menu)
+#print(result_vivat)
+"Тонкое м г ц, Пышное м г ц"
 
 #https://www.vivatpizza.ru/popup/constructor?constructorId=4f5ffd98-98e7-460d-ab31-272d22e23bd5
 #print("--- %s seconds ---" % (time.time() - start_time))

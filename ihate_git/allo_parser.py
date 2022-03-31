@@ -2,6 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import time
 
+
+def da_importa(a):
+    b = []
+    for i in range(len(a)):
+        if a[i].isdigit():
+            if a[i + 2].isdigit() and a[i + 3].isdigit() == False and a[i - 1].isdigit() == False:
+                b.append(int(a[i]) * 100 + int(a[i + 1]) * 10 + int(a[i + 2]))
+            if a[i + 3].isdigit():
+                b.append(int(a[i]) * 1000 + int(a[i + 1]) * 100 + int(a[i + 2]) * 10 + int(a[i + 3]))
+    return b
+
+
 def change_hrefs(hrefs):
     new_hrefs = []
     add = 'msk/all/'
@@ -37,12 +49,12 @@ def get_info(hrefs, main_menu):
         for j in range(1, len(new_something)):
             temp_arr.append(new_something[j].split("modifiers_groups")[0])
         temp_arr = change_info(temp_arr)
-        result.setdefault(main_menu[k], temp_arr)
+        temp_arr = ",".join(temp_arr)+"костылище"
+        result.setdefault(main_menu[k], da_importa(temp_arr))
         k += 1
     return result
 
 start_time = time.time()
-result ={}
 url = 'https://allopizza.su/msk/all#pizza'
 example = ['Маргарита', 'Пепперони', 'Мехико', 'Четыре сыра', 'Ветчина и грибы', 'Мясная', 'Морская де Люкс']
 allo_content = requests.get(url)
@@ -56,8 +68,7 @@ for i in match:
         hrefs.append(i.get('href'))
 hrefs = change_hrefs(hrefs)
 result_allo = get_info(hrefs, main_menu)
-for i in result_allo.keys():
-    for j in range(len(result_allo[i])):
-        print(result_allo[i][j], end='\n')
+print(result_allo)
+
 
 #print("--- %s seconds ---" % (time.time() - start_time))
