@@ -51,6 +51,5 @@ for i in match:
         current_menu.append(i.text)
         hrefs.append(i.get("data-popup-href"))
 result_vivat = href_manager(hrefs, current_menu)
-print(result_vivat)
 "Тонкое м г ц, Пышное м г ц"
 

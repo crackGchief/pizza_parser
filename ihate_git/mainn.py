@@ -11,10 +11,25 @@ import xlsxwriter as xlsx
     worksheet.insert_button('A50', {'macro': 'rodrigo',
                                    'caption': 'Press Me'})'''
 
+
 def correcr_pronto(weight):
     for i in range(len(weight)):
         weight[i] = weight[i][1:-1]
     return weight
+
+
+def pronto_data(result, worksheet):
+    menu = ['Маргарита', 'Пепперони', '4 сыра', 'С ветчиной и грибами', 'Много мяса', 'Дьявола', 'Пронтиссимо Фирменная']
+    prices = []
+    weight = []
+    for i in menu:
+        prices.extend(['', '', '', '', '', '', '', '', result[i][0],result[i][1]])
+        weight.extend(['', '', '', '', '', '', '', '', result[i][2],result[i][3]])
+    for i in range(2):
+        prices.remove('')
+        weight.remove('')
+    worksheet.write_column('B3', prices)
+    worksheet.write_column('C3', weight)
 
 def vivat_data(result, worksheet):
     menu = ['Маргарита', 'Пепперони', '4 сыра', 'Классика', 'Мясная делюкс', 'Мексиканская', 'Сальмоне']
@@ -31,23 +46,6 @@ def vivat_data(result, worksheet):
     worksheet.write_column('D3', prices)
     worksheet.write_column('E3', weight)
 
-def pronto_data(result, worksheet):
-    prices = []
-    weight = []
-    for i in result.keys():
-        for j in range(len(result[i]) - 1):
-            if result[i][j].split(':')[1][0] != '"' and result[i][j + 1].split(':')[1][0] != '"':
-                prices.extend([''] * 8 + [result[i][j].split(':')[1], result[i][j + 1].split(':')[1]])
-                j += 1
-            elif result[i][j].split(':')[1][0] == '"' and result[i][j + 1].split(':')[1][0] == '"':
-                weight.extend([''] * 8 + [result[i][j].split(':')[1], result[i][j + 1].split(':')[1]])
-                j += 1
-    weight = correcr_pronto(weight)
-    for i in range(2):
-        prices.remove('')
-        weight.remove('')
-    worksheet.write_column('B3', prices)
-    worksheet.write_column('C3', weight)
 
 def allo_data(result, worksheet):
     menu = ['Маргарита', 'Пепперони', 'Четыре сыра', 'Ветчина и грибы', 'Мясная', 'Мехико', 'Морская де Люкс']
@@ -64,10 +62,13 @@ def allo_data(result, worksheet):
     worksheet.write_column('F3', prices)
     worksheet.write_column('G3', weight)
 
+
 menu = ["Маргарита","Пепперони","4 сыра","С ветчиной и грибами","Мясная","Мексиканская","Сальмоне"]
 pizza = ['Пиццы', 'Пронто', '', 'Виват', '',  'Аллоха']
 tag = ['Цена, руб', 'Вес, г']
 tags = ['']
+
+
 for i in range(3):
     tags.extend(tag)
 temp_arr = []
@@ -96,3 +97,4 @@ worksheet.set_column(0, len(tags), 35, bold_cell)
 workbook.close()
 
 print("--- %s seconds ---" % (time.time() - start_time))
+print("cheemsburgar")

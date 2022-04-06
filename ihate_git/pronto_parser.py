@@ -3,6 +3,17 @@ from bs4 import BeautifulSoup
 import time
 
 
+def da_importa(a):
+    b = []
+    for i in range(len(a)):
+        if a[i].isdigit():
+            if a[i + 2].isdigit() and a[i + 3].isdigit() == False and a[i - 1].isdigit() == False:
+                b.append(int(a[i]) * 100 + int(a[i + 1]) * 10 + int(a[i + 2]))
+            if a[i + 3].isdigit():
+                b.append(int(a[i]) * 1000 + int(a[i + 1]) * 100 + int(a[i + 2]) * 10 + int(a[i + 3]))
+    return b
+
+
 def find_size(spisok):
     catalog = []
     new_spisok_mid = spisok[1]
@@ -12,6 +23,7 @@ def find_size(spisok):
     for i in range(2):
         catalog.append(new_spisok_mid[i+1])
         catalog.append(new_spisok_large[i+1])
+    catalog = da_importa(",".join(catalog)+"костылище")
     cataloge.append(catalog)
 
 
@@ -40,3 +52,5 @@ for pizza in menu:
             hrefs.append(i.get("href"))
 href_manager(hrefs)
 result_pronto = dict(zip(menu,cataloge))
+
+

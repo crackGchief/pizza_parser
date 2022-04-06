@@ -68,7 +68,7 @@ for i in match:
         hrefs.append(i.get('href'))
 hrefs = change_hrefs(hrefs)
 result_allo = get_info(hrefs, main_menu)
-print(result_allo)
+
 
 
 #print("--- %s seconds ---" % (time.time() - start_time))
