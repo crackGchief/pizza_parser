@@ -1,56 +1,113 @@
-import requests
-from bs4 import BeautifulSoup
 import time
 
-
-def da_importa(a):
-    b = []
-    for i in range(len(a)):
-        if a[i].isdigit():
-            if a[i + 2].isdigit() and a[i + 3].isdigit() == False and a[i - 1].isdigit() == False:
-                b.append(int(a[i]) * 100 + int(a[i + 1]) * 10 + int(a[i + 2]))
-            if a[i + 3].isdigit():
-                b.append(int(a[i]) * 1000 + int(a[i + 1]) * 100 + int(a[i + 2]) * 10 + int(a[i + 3]))
-    return b
-
-
-def find_size(spisok):
-    catalog = []
-    new_spisok_mid = spisok[1]
-    new_spisok_mid = new_spisok_mid.split(",")
-    new_spisok_large = spisok[2]
-    new_spisok_large = new_spisok_large.split(",")
-    for i in range(2):
-        catalog.append(new_spisok_mid[i+1])
-        catalog.append(new_spisok_large[i+1])
-    catalog = da_importa(",".join(catalog)+"костылище")
-    cataloge.append(catalog)
-
-
-def new_url(url):
-    dodo_content = requests.get(url)
-    soup = BeautifulSoup(dodo_content.text, "lxml")
-    match = soup.find("form", class_="item js-widget item_detail")
-    spisok = str(match).split("catalog_item")
-    find_size(spisok)
-
-
-def href_manager(spisok):
-    for href in range(len(hrefs)):
-        url = "https://pronto24.ru" + hrefs[href]
-        new_url(url)
-
 start_time = time.time()
-menu = ["Маргарита","Пепперони","4 сыра","С ветчиной и грибами","Много мяса","Дьявола","Пронтиссимо Фирменная"]
-dodo_content = requests.get("https://pronto24.ru/catalog/category/picca")
-soup = BeautifulSoup(dodo_content.text, "lxml")
-match = soup.find_all("a")
-hrefs , cataloge= [], []
-for pizza in menu:
-    for i in match:
-        if i.text == pizza:
-            hrefs.append(i.get("href"))
-href_manager(hrefs)
-result_pronto = dict(zip(menu,cataloge))
+
+from pronto_parser import result_pronto, menu
+from allo_parser import result_allo
+from vivat_parser import result_vivat
+
+import xlsxwriter as xlsx
+
+'''def button(worksheet):
+    worksheet.insert_button('A50', {'macro': 'rodrigo',
+                                   'caption': 'Press Me'})'''
 
 
+def correcr_pronto(weight):
+    for i in range(len(weight)):
+        weight[i] = weight[i][1:-1]
+    return weight
+
+
+def vivat_data(result, worksheet):
+    menu = ['Маргарита', 'Пепперони', '4 сыра', 'Классика', 'Мясная делюкс', 'Мексиканская', 'Сальмоне']
+    prices = []
+    weight = []
+    average_prices = []
+    for i in menu:
+        prices.extend(['', '', result[i][1], result[i][5], result[i][9], '', '', result[i][3], result[i][7],
+                       result[i][11]])
+        weight.extend(['', '', result[i][0], result[i][4], result[i][8], '', '', result[i][2], result[i][6],
+                       result[i][10]])
+        average_prices.extend(['', '', round(int(result[i][1])/int(result[i][0]), 2), round((result[i][5])/int(result[i][4]), 2),
+                              round(int(result[i][9])/int(result[i][8]), 2), '', '', round(int(result[i][3])/int(result[i][2]), 2),
+                              round(int(result[i][7])/int(result[i][6]), 2), round(int(result[i][11])/int(result[i][10]), 2)])
+    for i in range(2):
+        prices.remove('')
+        weight.remove('')
+        average_prices.remove('')
+    worksheet.write_column('E3', prices)
+    worksheet.write_column('F3', weight)
+    worksheet.write_column('G3', average_prices)
+
+
+def pronto_data(result, worksheet):
+    menu = ['Маргарита', 'Пепперони', '4 сыра', 'С ветчиной и грибами', 'Много мяса', 'Дьявола', 'Пронтиссимо Фирменная']
+    prices = []
+    weight = []
+    average_prices = []
+    for i in menu:
+        prices.extend(['', '', '', '', '', '', '', '', result[i][0],result[i][1]])
+        weight.extend(['', '', '', '', '', '', '', '', result[i][2],result[i][3]])
+        average_prices.extend(['', '', '', '', '', '', '', '', round(int(result[i][0])/int(result[i][2]), 2),
+                               round(int(result[i][1])/int(result[i][3]), 2)])
+    for i in range(2):
+        prices.remove('')
+        weight.remove('')
+        average_prices.remove('')
+    worksheet.write_column('B3', prices)
+    worksheet.write_column('C3', weight)
+    worksheet.write_column('D3', average_prices)
+
+
+def allo_data(result, worksheet):
+    menu = ['Маргарита', 'Пепперони', 'Четыре сыра', 'Ветчина и грибы', 'Мясная', 'Мехико', 'Морская де Люкс']
+    prices = []
+    weight = []
+    average_prices = []
+
+    for i in menu:
+        weight.extend(['', '', result[i][0], result[i][2], result[i][6], '', '', '', result[i][4], result[i][8]])
+        prices.extend(['', '', result[i][1], result[i][3], result[i][7], '', '', '', result[i][5], result[i][9]])
+        average_prices.extend(['', '', round(int(result[i][1])/int(result[i][0]), 2), round(int(result[i][3])/int(result[i][2]), 2),
+                               round(int(result[i][7])/int(result[i][6]), 2), '', '', '', round(int(result[i][5])/int(result[i][4]), 2),
+                               round(int(result[i][9])/int(result[i][8]), 2)])
+    for i in range(2):
+        prices.remove('')
+        weight.remove('')
+        average_prices.remove('')
+    worksheet.write_column('H3', prices)
+    worksheet.write_column('I3', weight)
+    worksheet.write_column('J3', average_prices)
+
+
+menu = ["Маргарита", "Пепперони", "4 сыра", "С ветчиной и грибами", "Мясная", "Мексиканская", "Сальмоне"]
+pizza = ['Пиццы', 'Пронто', '', '', 'Виват', '', '', 'Аллоха', '', '', 'Средняя']
+tag = ['Цена, руб', 'Вес, г', 'руб за грамм']
+tags = ['']
+for i in range(4):
+    tags.extend(tag)
+temp_arr = []
+workbook = xlsx.Workbook('pizza_table.xlsx')
+worksheet = workbook.add_worksheet()
+bold_cell = workbook.add_format({'bold': True})
+
+for i in range(len(menu)):
+    temp_arr.extend([menu[i] + ' маленькая', menu[i] + ' средняя', menu[i] + ' большая', '', '',
+                     menu[i] + ' мальнькая тонк', menu[i] + ' средняя тонк', menu[i] + ' большая тонк', '', ''])
+
+worksheet.write_column('A3', temp_arr)
+worksheet.write_row('A2', tags)
+worksheet.write_row('A1', pizza)
+
+pronto_data(result_pronto, worksheet)
+allo_data(result_allo, worksheet)
+vivat_data(result_vivat, worksheet)
+
+#button(worksheet)
+worksheet.set_row(0, 15, bold_cell)
+worksheet.set_column(0, len(tags), 35, bold_cell)
+
+workbook.close()
+
+print("--- %s seconds ---" % (time.time() - start_time))
